@@ -3,6 +3,8 @@ package com.epam.task3.service;
 import com.epam.task3.bean.News;
 import com.epam.task3.service.exception.ServiceException;
 
+import java.util.ArrayList;
+
 
 /**
  * Interface that can be added and receive the news
@@ -16,5 +18,5 @@ public interface NewsService {
     /**
      * Receive all the news from the file
      */
-    String getNews(String request) throws ServiceException;
+    ArrayList<News> getNews(News news) throws ServiceException;
 }

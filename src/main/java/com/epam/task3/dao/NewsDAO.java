@@ -20,9 +20,9 @@ public interface NewsDAO {
     /**
      * Receive all the news from the file
      *
-     * @param searchParam params of searching news
+     * @param news params of searching news
      * @return line with all find news
      * @throws DAOException errors that may occur when you receive news a file
      */
-    String getNews(ArrayList<String> searchParam) throws DAOException;
+    ArrayList<News> getNews(News news) throws DAOException;
 }

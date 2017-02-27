@@ -49,32 +49,28 @@ public class FileNewsDAO implements NewsDAO {
     /**
      * Searches for all the news that match the search criteria
      *
-     * @param searchParam params of searching news
+     * @param news news bean to find news in file
      * @return all searching news
      * @throws DAOException not found txt file, end file, error closing of stream
      */
     @Override
-    public String getNews(ArrayList<String> searchParam) throws DAOException {
-        String response;
+    public ArrayList<News> getNews(News news) throws DAOException {
+        ArrayList<News> allNews = new ArrayList<>();
         FileReader reader = null;
         BufferedReader br = null;
         try {
+            boolean flag;
             reader = new FileReader(TXT_FILE_PATH);
             br = new BufferedReader(reader);
             String s;
-            StringBuilder stringBuilder = new StringBuilder();
             while ((s = br.readLine()) != null) {
-                int count = 0;
-                for (String param : searchParam) {
-                    if (s.indexOf(param) != -1) {
-                        count++;
-                    }
-                    if (count == searchParam.size()) {
-                        stringBuilder.append(getParamNews(s).toString() + "\n");
-                    }
+                flag = getFlag(s, news.getCategory());
+                flag = getFlag(s, news.getTitle());
+                flag = getFlag(s, news.getAuthor());
+                if (flag) {
+                    allNews.add(getParamNews(s));
                 }
             }
-            response = stringBuilder.toString();
         } catch (FileNotFoundException e) {
             throw new DAOException(ERROR_NOT_FOUND_FILE_MESSAGE);
         } catch (IOException e) {
@@ -87,17 +83,23 @@ public class FileNewsDAO implements NewsDAO {
                 throw new DAOException(ERROR_CLOSING_MESSAGE);
             }
         }
-        return response;
+        return allNews;
     }
 
-    /**
-     * Parses line from a file on the params
-     *
-     * @param line one line of file
-     * @return bean object News with all params
-     */
     private News getParamNews(String line) {
         String[] param = line.split(",");
         return new News(param[0], param[1], param[2]);
+    }
+
+    private boolean getFlag(String lineOfFile, String param) {
+        boolean flag;
+        if (lineOfFile.indexOf(param) != -1) {
+            flag = true;
+        } else if (param.equals("")) {
+            flag = true;
+        } else {
+            flag = false;
+        }
+        return flag;
     }
 }

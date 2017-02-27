@@ -23,8 +23,7 @@ public class NewsServiceImpl implements NewsService {
      * Add news of file
      *
      * @param news request of user
-     * @return message to user, if news added or doesn't add
-     * @throws ServiceException
+     * @throws ServiceException if there are exceptions in Service layer
      */
     @Override
     public void addNews(News news) throws ServiceException {
@@ -32,7 +31,7 @@ public class NewsServiceImpl implements NewsService {
             DAOFactory daoFactory = DAOFactory.getInstance();
             NewsDAO newsDAO = daoFactory.getNewDAO();
             NewsCategory.valueOf(news.getCategory().toUpperCase());
-            newsDAO.addNews(null);
+            newsDAO.addNews(news);
         } catch (IllegalArgumentException e) {
             logger.error(e);
         } catch (DAOException e) {
@@ -43,43 +42,20 @@ public class NewsServiceImpl implements NewsService {
     /**
      * Receive all news of file
      *
-     * @param request request of user
+     * @param news
      * @return all news which searched
      * @throws ServiceException
      */
     @Override
-    public String getNews(String request) throws ServiceException {
-        String response;
-        NewsDAO newsDAO;
+    public ArrayList<News> getNews(News news) throws ServiceException {
+        ArrayList<News> allNews;
         try {
             DAOFactory daoFactory = DAOFactory.getInstance();
-            newsDAO = daoFactory.getNewDAO();
-            response = newsDAO.getNews(getSearchParamOfNews(request));
+            NewsDAO newsDAO = daoFactory.getNewDAO();
+            allNews = newsDAO.getNews(news);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
-        return response;
-    }
-
-    /**
-     * Receive all searching params which entered
-     *
-     * @param request request of user
-     * @return list with all searching params
-     */
-    private ArrayList<String> getSearchParamOfNews(String request) {
-        ArrayList<String> searchParam = new ArrayList<>();
-        request = request.substring(request.indexOf(' ') + 1, request.length());
-        String[] paramNews = request.split(",");
-        if (paramNews.length < 1 || paramNews.length > 3) {
-            throw new IllegalArgumentException("Entered incorrect number of parameters!");
-        } else {
-            for (int i = 0; i < paramNews.length; i++) {
-                if (!paramNews[i].equals("")) {
-                    searchParam.add(paramNews[i]);
-                }
-            }
-        }
-        return searchParam;
+        return allNews;
     }
 }

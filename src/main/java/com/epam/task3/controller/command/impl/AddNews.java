@@ -2,6 +2,7 @@ package com.epam.task3.controller.command.impl;
 
 import com.epam.task3.bean.News;
 import com.epam.task3.controller.command.Command;
+import com.epam.task3.controller.command.exception.IllegalNumberParam;
 import com.epam.task3.service.NewsService;
 import com.epam.task3.service.exception.ServiceException;
 import com.epam.task3.service.factory.ServiceFactory;
@@ -18,6 +19,7 @@ public class AddNews implements Command {
     private static final String INCORRECT_NUMBER_PARAM = "Entered incorrect number of parameters!";
 
     private static final Logger logger = LogManager.getLogger(AddNews.class);
+
     /**
      * Add news of file
      *
@@ -32,7 +34,7 @@ public class AddNews implements Command {
             NewsService newsService = serviceFactory.getNewsService();
             newsService.addNews(getParams(request));
             response = NEWS_ADD_MESSAGE;
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalNumberParam e) {
             response = ERROR_ADDED_MESSAGE;
             logger.error(e);
         } catch (ServiceException e) {
@@ -42,11 +44,11 @@ public class AddNews implements Command {
         return response;
     }
 
-    private News getParams(String request) {
+    private News getParams(String request) throws IllegalNumberParam {
         request = request.substring(request.indexOf(' ') + 1, request.length());
         String[] paramNews = request.split(",");
         if (paramNews.length < 3 || paramNews.length > 3) {
-            throw new IllegalArgumentException(INCORRECT_NUMBER_PARAM);
+            throw new IllegalNumberParam(INCORRECT_NUMBER_PARAM);
         }
         return new News(paramNews[0], paramNews[1], paramNews[2]);
     }
