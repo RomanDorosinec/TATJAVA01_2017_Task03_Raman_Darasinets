@@ -1,4 +1,4 @@
-package com.epam.task3;
+package com.epam.task3.main;
 
 import com.epam.task3.controller.Controller;
 
@@ -8,6 +8,6 @@ public class Main {
 
     public static void main(String[] args) {
         Controller controller = new Controller();
-        System.out.println(controller.executeTask(ADD));
+        System.out.println(controller.executeTask(GET_NEWS));
     }
 }

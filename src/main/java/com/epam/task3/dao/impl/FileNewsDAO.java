@@ -11,6 +11,10 @@ import java.util.ArrayList;
  * Class FileNewsDAO which implements the interface methods of NewsDAO
  */
 public class FileNewsDAO implements NewsDAO {
+
+    private static final String ERROR_NOT_FOUND_FILE_MESSAGE = "Not found txt file!";
+    private static final String ERROR_CLOSING_MESSAGE = "Error closing of stream!";
+
     /**
      * File location
      */
@@ -30,14 +34,14 @@ public class FileNewsDAO implements NewsDAO {
             writer.write(news.getCategory() + "," + news.getTitle() + "," + news.getAuthor());
             writer.append("\n");
         } catch (FileNotFoundException e) {
-            throw new DAOException("Not found txt file!");
+            throw new DAOException(ERROR_NOT_FOUND_FILE_MESSAGE);
         } catch (IOException e) {
             throw new DAOException(e);
         } finally {
             try {
                 writer.close();
             } catch (IOException e) {
-                throw new DAOException("Error closing of stream!");
+                throw new DAOException(ERROR_CLOSING_MESSAGE);
             }
         }
     }
@@ -72,15 +76,15 @@ public class FileNewsDAO implements NewsDAO {
             }
             response = stringBuilder.toString();
         } catch (FileNotFoundException e) {
-            throw new DAOException("Not found txt file!");
+            throw new DAOException(ERROR_NOT_FOUND_FILE_MESSAGE);
         } catch (IOException e) {
-            throw new DAOException("End file!");
+            throw new DAOException(e);
         } finally {
             try {
                 reader.close();
                 br.close();
             } catch (IOException e) {
-                throw new DAOException("Error closing of stream!");
+                throw new DAOException(ERROR_CLOSING_MESSAGE);
             }
         }
         return response;
